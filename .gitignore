@@ -1,0 +1,12 @@
+# Ignore database data
+mysql/
+
+# Ignore WordPress core files (if you want to keep repo light)
+# But keep your custom work
+wordpress/*
+!wordpress/wp-content/themes/
+!wordpress/wp-content/plugins/
+
+# Ignore logs and temp files
+*.log
+.DS_Store

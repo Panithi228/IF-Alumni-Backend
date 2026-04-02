@@ -1,0 +1,22 @@
+{
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://wpackagist.org"
+    }
+  ],
+  "config": {
+    "allow-plugins": {
+      "composer/installers": true
+    }
+  },
+  "require": {
+    "composer/installers": "~1.0",
+    "wpackagist-plugin/advanced-custom-fields": "^6.8",
+    "wpackagist-plugin/custom-post-type-ui": "^1.18.3",
+    "wpackagist-plugin/wp-graphql": "^2.10",
+    "wpackagist-plugin/wpgraphql-acf": "^2.5"
+  }
+}
