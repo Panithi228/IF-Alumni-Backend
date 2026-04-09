@@ -17,6 +17,7 @@
     "wpackagist-plugin/advanced-custom-fields": "^6.8",
     "wpackagist-plugin/custom-post-type-ui": "^1.18.3",
     "wpackagist-plugin/wp-graphql": "^2.10",
-    "wpackagist-plugin/wpgraphql-acf": "^2.5"
+    "wpackagist-plugin/wpgraphql-acf": "^2.5",
+    "wpackagist-plugin/jwt-authentication-for-wp-rest-api": "^1.5.0"
   }
 }
