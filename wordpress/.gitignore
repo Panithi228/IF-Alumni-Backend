@@ -7,3 +7,4 @@ wp-content/*
 !wp-content/plugins/
 wp-content/plugins/*
 !wp-content/plugins/alumni-api/
+!wp-content/plugins/alumni-api/**

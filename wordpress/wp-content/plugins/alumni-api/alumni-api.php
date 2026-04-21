@@ -1,0 +1,278 @@
+<?php
+/*
+    Plugin Name: Alumni API
+    Description: A plugin to create API for Alumni website
+    Version: 1.0
+*/
+
+add_action('rest_api_init', function () {
+    register_rest_route('alumni-api/v1', '/submit', array(
+        'methods' => 'POST',
+        'callback' => 'handle_guest_alumni_submission',
+        'permission_callback' => function () {
+            return true; 
+        },
+    ));
+
+    register_rest_route('alumni-api/v1', '/update/(?P<id>\d+)', array(
+        'methods' => 'POST',
+        'callback' => 'handle_guest_alumni_update',
+        'permission_callback' => function () {
+            return true; 
+        },
+    ));
+
+    register_rest_route('alumni-api/v1', '/donation', array(
+        'methods' => 'POST',
+        'callback' => 'handle_donation_submit',
+        'permission_callback' => function () {
+            return true;
+        },
+    ));
+
+    register_rest_route('alumni-api/v1', '/alumni-all', array(
+        'methods' => 'GET',
+        'callback' => 'handle_get_all_alumni',
+        'permission_callback' => function () {
+            return true;
+        },
+    ));
+});
+
+// --- ฟังก์ชันสำหรับสร้าง Post ใหม่ ---
+function handle_guest_alumni_submission($request) {
+    $params = $request->get_params();
+    $acf_data = $request->get_param('acf');
+    $files = $request->get_file_params();
+
+    $status = 'pending';
+    if (is_user_logged_in() && current_user_can('administrator')) {
+        $status = 'publish';
+    }
+
+    $post_args = array(
+        'post_title'   => sanitize_text_field($params['title']),
+        'post_type'    => 'alumni', 
+        'post_status'  => $status, 
+    );
+
+    $post_id = wp_insert_post($post_args);
+
+    if (is_wp_error($post_id)) {
+        return new WP_Error('save_error', 'Cannot save alumni', array('status' => 500));
+    }
+
+    // จัดการรูปภาพ
+    if (!empty($files['featured_image'])) {
+        require_once(ABSPATH . 'wp-admin/includes/image.php');
+        require_once(ABSPATH . 'wp-admin/includes/file.php');
+        require_once(ABSPATH . 'wp-admin/includes/media.php');
+        $attachment_id = media_handle_upload('featured_image', $post_id);
+        if (!is_wp_error($attachment_id)) {
+            set_post_thumbnail($post_id, $attachment_id);
+        }
+    }
+
+    // อัปเดต ACF
+    if ($acf_data && function_exists('update_field')) {
+        foreach ($acf_data as $key => $value) {
+            update_field($key, $value, $post_id);
+        }
+    }
+
+    return new WP_REST_Response(array(
+        'success' => true,
+        'message' => 'Submitted successfully. Waiting for approval.',
+        'id' => $post_id
+    ), 200);
+}
+
+// --- ฟังก์ชันสำหรับแก้ไข Post เดิม ---
+function handle_guest_alumni_update($request) {
+    $post_id = $request['id'];
+    $params = $request->get_params();
+    $files = $request->get_file_params();
+    
+    // ดึงข้อมูลเดิมมาเช็คความถูกต้อง
+    if (function_exists('get_field')) {
+        $stored_student_id = get_field('student_id', $post_id);
+        $stored_email = get_field('email', $post_id);
+    } else {
+        $stored_student_id = get_post_meta($post_id, 'student_id', true);
+        $stored_email = get_post_meta($post_id, 'email', true);
+    }
+
+    // ตรวจสอบว่า "รหัสนิสิต" และ "อีเมล" ตรงกับของเดิมในฐานข้อมูลไหม
+    if ($params['check_student_id'] !== $stored_student_id || $params['check_email'] !== $stored_email) {
+        return new WP_Error('auth_failed', 'รหัสนิสิตหรืออีเมลไม่ถูกต้อง ไม่สามารถแก้ไขข้อมูลได้', array('status' => 403));
+    }
+
+    // อัปเดตข้อมูลเบื้องต้น
+    $update_args = array(
+        'ID'           => $post_id,
+        'post_title'   => sanitize_text_field($params['title']),
+        'post_status'  => 'publish',
+    );
+    wp_update_post($update_args);
+
+    // จัดการรูปภาพใหม่ (ถ้ามี)
+    if (!empty($files['featured_image'])) {
+        require_once(ABSPATH . 'wp-admin/includes/image.php');
+        require_once(ABSPATH . 'wp-admin/includes/file.php');
+        require_once(ABSPATH . 'wp-admin/includes/media.php');
+        $attachment_id = media_handle_upload('featured_image', $post_id);
+        if (!is_wp_error($attachment_id)) {
+            set_post_thumbnail($post_id, $attachment_id);
+        }
+    }
+
+    // อัปเดต ACF Fields
+    if (isset($params['acf']) && is_array($params['acf'])) {
+        foreach ($params['acf'] as $key => $value) {
+            update_field($key, $value, $post_id);
+        }
+    }
+
+    return array('success' => true, 'message' => 'Updated successfully.');
+}
+
+add_filter('rest_authentication_errors', function ($result) {
+    if (!empty($result)) {
+        return $result;
+    }
+
+    return null;
+});
+
+function generate_receipt_no($post_id) {
+    $date = date('Ymd');
+
+    $receipt_no = 'DON-' . $date . '-' . str_pad($post_id, 6, '0', STR_PAD_LEFT);
+
+    return $receipt_no;
+}
+
+function handle_donation_submit($request) {
+    $params = $request->get_params();
+    $files = $request->get_file_params();
+
+    $post_id = wp_insert_post([
+        'post_type'   => 'donation',
+        'post_title'  => sanitize_text_field($params['full_name']) . ' - ' . current_time('Y-m-d H:i:s'),
+        'post_status' => 'publish',
+    ]);
+
+    if (is_wp_error($post_id)) {
+        return new WP_Error('create_failed', 'Cannot create donation', ['status' => 500]);
+    }
+
+    $receipt_no = generate_receipt_no($post_id);
+
+    // --- ACF SAVE (ต้องตรง field จริงใน WP) ---
+    update_field('receipt_no', $receipt_no, $post_id);
+    update_field('receipt', $params['receipt'] === '1', $post_id);
+    update_field('donation_type', $params['donation_type'], $post_id);
+    update_field('prefix', $params['prefix'], $post_id);
+    update_field('full_name', $params['full_name'], $post_id);
+    update_field('id', $params['tax_id'], $post_id);
+    update_field('phone_number', $params['phone_number'], $post_id);
+    update_field('postal_code', $params['postal_code'], $post_id);
+    update_field('house_number', $params['house_number'], $post_id);
+    update_field('address', $params['address'], $post_id);
+    update_field('sub_district', $params['sub_district'], $post_id);
+    update_field('district', $params['district'], $post_id);
+    update_field('province', $params['province'], $post_id);
+    update_field('donation_amount', $params['amount'], $post_id);
+    update_field('donation_email', $params['email'], $post_id);
+    update_field('additional_info', $params['additional_info'], $post_id);
+    update_field('project_id', $params['project_id'], $post_id);
+    update_field('payment_method', $params['payment_method'], $post_id);
+
+    // -------------------------
+    // FILE UPLOAD (หลักฐานโอน)
+    // -------------------------
+    $attachment_id = null;
+    if (!empty($files['donation_receipt'])) {
+        require_once(ABSPATH . 'wp-admin/includes/file.php');
+        require_once(ABSPATH . 'wp-admin/includes/media.php');
+        require_once(ABSPATH . 'wp-admin/includes/image.php');
+
+        $attachment_id = media_handle_upload('donation_receipt', $post_id);
+
+        if (!is_wp_error($attachment_id)) {
+            update_field('donation_receipt', $attachment_id, $post_id);
+        }
+    }
+
+    // -------------------------
+    // EMAIL + ATTACH FILE
+    // -------------------------
+    $admin_email = get_option('admin_email');
+
+    $subject = "มีการบริจาคใหม่ - $receipt_no";
+
+    $message = "
+    มีรายการบริจาคใหม่
+
+    เลขที่ใบเสร็จ: $receipt_no
+    ชื่อ: {$params['full_name']}
+    จำนวนเงิน: {$params['amount']} บาท
+    เบอร์โทร: {$params['phone_number']}
+    อีเมล: {$params['email']}
+    ";
+
+    $headers = ['Content-Type: text/plain; charset=UTF-8'];
+
+    $attachments = [];
+
+    if ($attachment_id) {
+        $file_path = get_attached_file($attachment_id);
+        if ($file_path) {
+            $attachments[] = $file_path;
+        }
+    }
+
+    wp_mail($admin_email, $subject, $message, $headers, $attachments);
+
+    return new WP_REST_Response([
+        'success' => true,
+        'receipt_no' => $receipt_no,
+        'post_id' => $post_id
+    ], 200);
+}
+
+function handle_get_all_alumni($request) {
+    $page = $request->get_param('page') ?: 1;
+    $per_page = $request->get_param('per_page') ?: 100;
+
+    $args = array(
+        'post_type'      => 'alumni',
+        'post_status'    => array('publish', 'pending'),
+        'posts_per_page' => $per_page,
+        'paged'          => $page,
+    );
+
+    $query = new WP_Query($args);
+    $posts = array();
+
+    foreach ($query->posts as $post) {
+        $acf = function_exists('get_fields') ? get_fields($post->ID) : [];
+        $thumbnail_id = get_post_thumbnail_id($post->ID);
+        $thumbnail_url = $thumbnail_id ? wp_get_attachment_image_url($thumbnail_id, 'full') : null;
+
+        $posts[] = array(
+            'id'     => $post->ID,
+            'title'  => array('rendered' => $post->post_title),
+            'status' => $post->post_status,
+            'acf'    => $acf,
+            '_embedded' => array(
+                'wp:featuredmedia' => $thumbnail_url ? array(array('source_url' => $thumbnail_url)) : array()
+            ),
+        );
+    }
+
+    $response = new WP_REST_Response($posts, 200);
+    $response->header('X-WP-TotalPages', $query->max_num_pages);
+
+    return $response;
+}

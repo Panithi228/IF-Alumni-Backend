@@ -4,14 +4,18 @@ mysql/
 # Ignore WordPress core files (if you want to keep repo light)
 # But keep your custom work
 wordpress/*
-!wordpress/wp-content/themes/
+!wordpress/.gitignore
+!wordpress/.htaccess
+!wordpress/composer.json
+!wordpress/composer.lock
+!wordpress/wp-content/
+
+# Ignore wp-content ยกเว้น custom plugin
+wordpress/wp-content/*
 !wordpress/wp-content/plugins/
 
-wordpress/wp-content/plugins/advanced-custom-fields/
-wordpress/wp-content/plugins/custom-post-type-ui/
-wordpress/wp-content/plugins/wp-graphql/
-wordpress/wp-content/plugins/wpgraphql-acf/
-wordpress/wp-content/plugins/jwt-authentication-for-wp-rest-api/
+wordpress/wp-content/plugins/*
+!wordpress/wp-content/plugins/alumni-api/
 
 # Ignore logs and temp files
 *.log
