@@ -7,6 +7,12 @@ wordpress/*
 !wordpress/wp-content/themes/
 !wordpress/wp-content/plugins/
 
+wordpress/wp-content/plugins/advanced-custom-fields/
+wordpress/wp-content/plugins/custom-post-type-ui/
+wordpress/wp-content/plugins/wp-graphql/
+wordpress/wp-content/plugins/wpgraphql-acf/
+wordpress/wp-content/plugins/jwt-authentication-for-wp-rest-api/
+
 # Ignore logs and temp files
 *.log
 .DS_Store

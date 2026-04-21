@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0a05e416fff84f2c6e10aad9a962743e",
+    "content-hash": "f1272d8dce26258ed6347c9699c79a20",
     "packages": [
         {
             "name": "composer/installers",
@@ -194,16 +194,34 @@
             "homepage": "https://wordpress.org/plugins/custom-post-type-ui/"
         },
         {
-            "name": "wpackagist-plugin/wp-graphql",
-            "version": "2.10.1",
+            "name": "wpackagist-plugin/jwt-authentication-for-wp-rest-api",
+            "version": "1.5.0",
             "source": {
                 "type": "svn",
-                "url": "https://plugins.svn.wordpress.org/wp-graphql/",
-                "reference": "tags/2.10.1"
+                "url": "https://plugins.svn.wordpress.org/jwt-authentication-for-wp-rest-api/",
+                "reference": "tags/1.5.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/wp-graphql.2.10.1.zip"
+                "url": "https://downloads.wordpress.org/plugin/jwt-authentication-for-wp-rest-api.1.5.0.zip"
+            },
+            "require": {
+                "composer/installers": "^1.0 || ^2.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/jwt-authentication-for-wp-rest-api/"
+        },
+        {
+            "name": "wpackagist-plugin/wp-graphql",
+            "version": "2.11.2",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/wp-graphql/",
+                "reference": "tags/2.11.2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/wp-graphql.2.11.2.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -213,15 +231,15 @@
         },
         {
             "name": "wpackagist-plugin/wpgraphql-acf",
-            "version": "2.5.1",
+            "version": "2.5.2",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/wpgraphql-acf/",
-                "reference": "tags/2.5.1"
+                "reference": "tags/2.5.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/wpgraphql-acf.2.5.1.zip"
+                "url": "https://downloads.wordpress.org/plugin/wpgraphql-acf.2.5.2.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
