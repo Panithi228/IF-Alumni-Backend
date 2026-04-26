@@ -19,7 +19,6 @@ services:
       MYSQL_PASSWORD: wordpress
     volumes:
       - ./mysql:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   # phpmyadmin:
   #   image: phpmyadmin/phpmyadmin
@@ -39,7 +38,6 @@ services:
       - mysql
       - composer
     build: .
-    image: panithi228/if-alumni-wp:latest
     ports:
       - 8041:80
     restart: always
@@ -49,4 +47,4 @@ services:
       WORDPRESS_DB_PASSWORD: wordpress
       WORDPRESS_DB_NAME: wordpress
     volumes:
-      - ./wordpress:/var/www/html
+      - ./wordpress/wp-content:/var/www/html/wp-content
