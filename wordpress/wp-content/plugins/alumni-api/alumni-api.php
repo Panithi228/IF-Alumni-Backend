@@ -276,3 +276,188 @@ function handle_get_all_alumni($request) {
 
     return $response;
 }
+
+function cptui_register_my_cpts() {
+
+	/**
+	 * Post Type: alumnies.
+	 */
+
+	$labels = [
+		"name" => esc_html__( "alumnies", "twentytwentyfive" ),
+		"singular_name" => esc_html__( "alumni", "twentytwentyfive" ),
+		"menu_name" => esc_html__( "My alumnies", "twentytwentyfive" ),
+		"all_items" => esc_html__( "All alumnies", "twentytwentyfive" ),
+		"add_new" => esc_html__( "Add new", "twentytwentyfive" ),
+		"add_new_item" => esc_html__( "Add new alumni", "twentytwentyfive" ),
+		"edit_item" => esc_html__( "Edit alumni", "twentytwentyfive" ),
+		"new_item" => esc_html__( "New alumni", "twentytwentyfive" ),
+		"view_item" => esc_html__( "View alumni", "twentytwentyfive" ),
+		"view_items" => esc_html__( "View alumnies", "twentytwentyfive" ),
+		"search_items" => esc_html__( "Search alumnies", "twentytwentyfive" ),
+		"not_found" => esc_html__( "No alumnies found", "twentytwentyfive" ),
+		"not_found_in_trash" => esc_html__( "No alumnies found in trash", "twentytwentyfive" ),
+		"parent" => esc_html__( "Parent alumni:", "twentytwentyfive" ),
+		"featured_image" => esc_html__( "Featured image for this alumni", "twentytwentyfive" ),
+		"set_featured_image" => esc_html__( "Set featured image for this alumni", "twentytwentyfive" ),
+		"remove_featured_image" => esc_html__( "Remove featured image for this alumni", "twentytwentyfive" ),
+		"use_featured_image" => esc_html__( "Use as featured image for this alumni", "twentytwentyfive" ),
+		"archives" => esc_html__( "alumni archives", "twentytwentyfive" ),
+		"insert_into_item" => esc_html__( "Insert into alumni", "twentytwentyfive" ),
+		"uploaded_to_this_item" => esc_html__( "Upload to this alumni", "twentytwentyfive" ),
+		"filter_items_list" => esc_html__( "Filter alumnies list", "twentytwentyfive" ),
+		"items_list_navigation" => esc_html__( "alumnies list navigation", "twentytwentyfive" ),
+		"items_list" => esc_html__( "alumnies list", "twentytwentyfive" ),
+		"attributes" => esc_html__( "alumnies attributes", "twentytwentyfive" ),
+		"name_admin_bar" => esc_html__( "alumni", "twentytwentyfive" ),
+		"item_published" => esc_html__( "alumni published", "twentytwentyfive" ),
+		"item_published_privately" => esc_html__( "alumni published privately.", "twentytwentyfive" ),
+		"item_reverted_to_draft" => esc_html__( "alumni reverted to draft.", "twentytwentyfive" ),
+		"item_trashed" => esc_html__( "alumni trashed.", "twentytwentyfive" ),
+		"item_scheduled" => esc_html__( "alumni scheduled", "twentytwentyfive" ),
+		"item_updated" => esc_html__( "alumni updated.", "twentytwentyfive" ),
+		"template_name" => esc_html__( "Single alumni: alumni", "twentytwentyfive" ),
+		"parent_item_colon" => esc_html__( "Parent alumni:", "twentytwentyfive" ),
+	];
+
+	$args = [
+		"label" => esc_html__( "alumnies", "twentytwentyfive" ),
+		"labels" => $labels,
+		"description" => "",
+		"public" => true,
+		"publicly_queryable" => true,
+		"show_ui" => true,
+		"show_in_rest" => true,
+		"rest_base" => "",
+		"rest_controller_class" => "WP_REST_Posts_Controller",
+		"rest_namespace" => "wp/v2",
+		"has_archive" => false,
+		"show_in_menu" => true,
+		"show_in_nav_menus" => true,
+		"delete_with_user" => false,
+		"exclude_from_search" => false,
+		"capability_type" => "post",
+		"map_meta_cap" => true,
+		"hierarchical" => false,
+		"can_export" => false,
+		"rewrite" => [ "slug" => "alumni", "with_front" => true ],
+		"query_var" => true,
+		"supports" => [ "title", "editor", "thumbnail", "custom-fields" ],
+		"show_in_graphql" => false,
+	];
+
+	register_post_type( "alumni", $args );
+
+	/**
+	 * Post Type: projects.
+	 */
+
+	$labels = [
+		"name" => esc_html__( "projects", "twentytwentyfive" ),
+		"singular_name" => esc_html__( "project", "twentytwentyfive" ),
+		"menu_name" => esc_html__( "My projects", "twentytwentyfive" ),
+		"all_items" => esc_html__( "All projects", "twentytwentyfive" ),
+		"add_new" => esc_html__( "Add new", "twentytwentyfive" ),
+		"add_new_item" => esc_html__( "Add new project", "twentytwentyfive" ),
+		"edit_item" => esc_html__( "Edit project", "twentytwentyfive" ),
+		"new_item" => esc_html__( "New project", "twentytwentyfive" ),
+		"view_item" => esc_html__( "View project", "twentytwentyfive" ),
+		"view_items" => esc_html__( "View projects", "twentytwentyfive" ),
+		"search_items" => esc_html__( "Search projects", "twentytwentyfive" ),
+		"not_found" => esc_html__( "No projects found", "twentytwentyfive" ),
+		"not_found_in_trash" => esc_html__( "No projects found in trash", "twentytwentyfive" ),
+		"parent" => esc_html__( "Parent project:", "twentytwentyfive" ),
+		"featured_image" => esc_html__( "Featured image for this project", "twentytwentyfive" ),
+		"set_featured_image" => esc_html__( "Set featured image for this project", "twentytwentyfive" ),
+		"remove_featured_image" => esc_html__( "Remove featured image for this project", "twentytwentyfive" ),
+		"use_featured_image" => esc_html__( "Use as featured image for this project", "twentytwentyfive" ),
+		"archives" => esc_html__( "project archives", "twentytwentyfive" ),
+		"insert_into_item" => esc_html__( "Insert into project", "twentytwentyfive" ),
+		"uploaded_to_this_item" => esc_html__( "Upload to this project", "twentytwentyfive" ),
+		"filter_items_list" => esc_html__( "Filter projects list", "twentytwentyfive" ),
+		"items_list_navigation" => esc_html__( "projects list navigation", "twentytwentyfive" ),
+		"items_list" => esc_html__( "projects list", "twentytwentyfive" ),
+		"attributes" => esc_html__( "projects attributes", "twentytwentyfive" ),
+		"name_admin_bar" => esc_html__( "project", "twentytwentyfive" ),
+		"item_published" => esc_html__( "project published", "twentytwentyfive" ),
+		"item_published_privately" => esc_html__( "project published privately.", "twentytwentyfive" ),
+		"item_reverted_to_draft" => esc_html__( "project reverted to draft.", "twentytwentyfive" ),
+		"item_trashed" => esc_html__( "project trashed.", "twentytwentyfive" ),
+		"item_scheduled" => esc_html__( "project scheduled", "twentytwentyfive" ),
+		"item_updated" => esc_html__( "project updated.", "twentytwentyfive" ),
+		"template_name" => esc_html__( "Single project: project", "twentytwentyfive" ),
+		"parent_item_colon" => esc_html__( "Parent project:", "twentytwentyfive" ),
+	];
+
+	$args = [
+		"label" => esc_html__( "projects", "twentytwentyfive" ),
+		"labels" => $labels,
+		"description" => "",
+		"public" => true,
+		"publicly_queryable" => true,
+		"show_ui" => true,
+		"show_in_rest" => true,
+		"rest_base" => "",
+		"rest_controller_class" => "WP_REST_Posts_Controller",
+		"rest_namespace" => "wp/v2",
+		"has_archive" => false,
+		"show_in_menu" => true,
+		"show_in_nav_menus" => true,
+		"delete_with_user" => false,
+		"exclude_from_search" => false,
+		"capability_type" => "post",
+		"map_meta_cap" => true,
+		"hierarchical" => false,
+		"can_export" => false,
+		"rewrite" => [ "slug" => "project", "with_front" => true ],
+		"query_var" => true,
+		"supports" => [ "title", "editor", "thumbnail", "custom-fields" ],
+		"show_in_graphql" => false,
+	];
+
+	register_post_type( "project", $args );
+
+	/**
+	 * Post Type: donations.
+	 */
+
+	$labels = [
+		"name" => esc_html__( "donations", "twentytwentyfive" ),
+		"singular_name" => esc_html__( "donation", "twentytwentyfive" ),
+	];
+
+	$args = [
+		"label" => esc_html__( "donations", "twentytwentyfive" ),
+		"labels" => $labels,
+		"description" => "",
+		"public" => true,
+		"publicly_queryable" => true,
+		"show_ui" => true,
+		"show_in_rest" => true,
+		"rest_base" => "",
+		"rest_controller_class" => "WP_REST_Posts_Controller",
+		"rest_namespace" => "wp/v2",
+		"has_archive" => false,
+		"show_in_menu" => true,
+		"show_in_nav_menus" => true,
+		"delete_with_user" => false,
+		"exclude_from_search" => false,
+		"capability_type" => "post",
+		"map_meta_cap" => true,
+		"hierarchical" => false,
+		"can_export" => false,
+		"rewrite" => [ "slug" => "donation", "with_front" => true ],
+		"query_var" => true,
+		"supports" => [ "title", "editor", "thumbnail", "custom-fields" ],
+		"show_in_graphql" => false,
+	];
+
+	register_post_type( "donation", $args );
+}
+
+add_action( 'init', 'cptui_register_my_cpts' );
+
+add_filter('acf/settings/load_json', function ($paths) {
+    $paths[] = plugin_dir_path(__FILE__) . 'acf-json';
+    return $paths;
+});
