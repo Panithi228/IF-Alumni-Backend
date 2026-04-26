@@ -7,4 +7,4 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 COPY setup-wp.sh /usr/local/bin/setup-wp.sh
 RUN chmod +x /usr/local/bin/setup-wp.sh
 
-CMD ["sh", "-c", "docker-entrypoint.sh apache2-foreground & sleep 15 && setup-wp.sh && wait"]
+CMD ["sh", "-c", "docker-entrypoint.sh apache2-foreground & sleep 15 && /usr/local/bin/setup-wp.sh && wait"]
