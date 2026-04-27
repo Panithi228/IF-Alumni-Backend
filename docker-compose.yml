@@ -47,4 +47,4 @@ services:
       WORDPRESS_DB_PASSWORD: wordpress
       WORDPRESS_DB_NAME: wordpress
     volumes:
-      - ./wordpress:/var/www/html
+      - ./wordpress/wp-content:/var/www/html/wp-content
