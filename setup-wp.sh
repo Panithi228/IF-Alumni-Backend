@@ -17,10 +17,9 @@ done
 if [ ! -f /var/www/html/wp-config.php ]; then
     echo "Creating wp-config.php..."
     wp config create --dbname=wordpress --dbuser=wordpress --dbpass=wordpress --dbhost=mysql --allow-root --path=/var/www/html
-    
-    wp config set JWT_AUTH_SECRET_KEY 'd|}43VK|5OveibEv-WwG)!QE GEh*rpS2d@m,ug)!NSzP.myT|`8CN,`Kx6P<Lxs' --allow-root --path=/var/www/html
-    wp config set JWT_AUTH_CORS_ENABLE true --raw --allow-root --path=/var/www/html
 fi
+wp config set JWT_AUTH_SECRET_KEY 'd|}43VK|5OveibEv-WwG)!QE GEh*rpS2d@m,ug)!NSzP.myT|`8CN,`Kx6P<Lxs' --allow-root --path=/var/www/html
+wp config set JWT_AUTH_CORS_ENABLE true --raw --allow-root --path=/var/www/html
 
 # 4. ติดตั้ง WordPress
 if ! wp core is-installed --allow-root --path=/var/www/html; then
@@ -35,6 +34,16 @@ if ! wp core is-installed --allow-root --path=/var/www/html; then
         --allow-root \
         --path=/var/www/html
 fi
+
+echo "Waiting for plugins..."
+until [ -f /var/www/html/wp-content/plugins/advanced-custom-fields/acf.php ] && \
+      [ -f /var/www/html/wp-content/plugins/custom-post-type-ui/custom-post-type-ui.php ] && \
+      [ -f /var/www/html/wp-content/plugins/jwt-authentication-for-wp-rest-api/jwt-auth.php ] && \
+      [ -f /var/www/html/wp-content/plugins/alumni-api/alumni-api.php ]; do
+  echo "Waiting for composer plugins..."
+  sleep 3
+done
+echo "Plugins ready!"
 
 # 5. Activate Plugins
 echo "Activating plugins..."
