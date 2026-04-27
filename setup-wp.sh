@@ -52,7 +52,16 @@ wp plugin activate custom-post-type-ui --allow-root --path=/var/www/html
 wp plugin activate jwt-authentication-for-wp-rest-api --allow-root --path=/var/www/html
 wp plugin activate alumni-api --allow-root --path=/var/www/html
 
-# 6. ตั้งค่า Permalink
+echo "Setting permissions..."
+chmod -R 755 /var/www/html/wp-content/uploads
+chown -R www-data:www-data /var/www/html/wp-content/uploads
+
+# 6. Import ACF Fields
+echo "Importing ACF fields..."
+wp acf import --json_file=/var/www/html/wp-content/plugins/alumni-api/acf-json/acf-import-alumni-api.json --allow-root --path=/var/www/html
+echo "ACF fields imported!"
+
+# 7. ตั้งค่า Permalink
 wp rewrite structure '/%postname%/' --hard --allow-root --path=/var/www/html
 
 echo "WordPress is ready to go!"
