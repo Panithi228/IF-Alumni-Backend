@@ -22,10 +22,13 @@ wp config set JWT_AUTH_SECRET_KEY 'd|}43VK|5OveibEv-WwG)!QE GEh*rpS2d@m,ug)!NSzP
 wp config set JWT_AUTH_CORS_ENABLE true --raw --allow-root --path=/var/www/html
 
 # 4. ติดตั้ง WordPress
+
+WP_URL=${WP_URL:-http://localhost:8041} # ← ดึง env มาใช้ (ถ้าไม่มีให้ใช้ค่า default)
+
 if ! wp core is-installed --allow-root --path=/var/www/html; then
     echo "Installing WordPress core..."
     wp core install \
-        --url="http://localhost:8041" \
+        --url="$WP_URL" \
         --title="IF Alumni" \
         --admin_user="admin" \
         --admin_password="admin" \
@@ -56,12 +59,7 @@ echo "Setting permissions..."
 chmod -R 755 /var/www/html/wp-content/uploads
 chown -R www-data:www-data /var/www/html/wp-content/uploads
 
-# 6. Import ACF Fields
-echo "Importing ACF fields..."
-wp acf import --json_file=/var/www/html/wp-content/plugins/alumni-api/acf-json/acf-import-alumni-api.json --allow-root --path=/var/www/html
-echo "ACF fields imported!"
-
-# 7. ตั้งค่า Permalink
+# 6. ตั้งค่า Permalink
 wp rewrite structure '/%postname%/' --hard --allow-root --path=/var/www/html
 
 echo "WordPress is ready to go!"

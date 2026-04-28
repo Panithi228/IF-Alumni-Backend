@@ -39,12 +39,13 @@ services:
       - composer
     build: .
     ports:
-      - 8041:80
+      - 8041:80 # ← เปลี่ยนเป็น port ที่จะใช้งาน
     restart: always
     environment:
       WORDPRESS_DB_HOST: mysql:3306
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
       WORDPRESS_DB_NAME: wordpress
+      WP_URL: http://localhost:8041 # ← เปลี่ยนเป็น URL ที่จะใช้งาน
     volumes:
       - ./wordpress/wp-content:/var/www/html/wp-content
