@@ -46,6 +46,6 @@ services:
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
       WORDPRESS_DB_NAME: wordpress
-      WP_URL: https://prepro.informatics.buu.ac.th/if-alumni-wp/ # ← เปลี่ยนเป็น URL ที่จะใช้งาน
+      WP_URL: https://prepro.informatics.buu.ac.th/if-alumni-wp # ← เปลี่ยนเป็น URL ที่จะใช้งาน
     volumes:
       - ./wordpress/wp-content:/var/www/html/wp-content
