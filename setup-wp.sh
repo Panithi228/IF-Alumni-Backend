@@ -20,6 +20,7 @@ if [ ! -f /var/www/html/wp-config.php ]; then
 fi
 wp config set JWT_AUTH_SECRET_KEY 'd|}43VK|5OveibEv-WwG)!QE GEh*rpS2d@m,ug)!NSzP.myT|`8CN,`Kx6P<Lxs' --allow-root --path=/var/www/html
 wp config set JWT_AUTH_CORS_ENABLE true --raw --allow-root --path=/var/www/html
+wp config set FORCE_SSL_ADMIN false --raw --allow-root --path=/var/www/html
 
 # 4. ติดตั้ง WordPress
 
