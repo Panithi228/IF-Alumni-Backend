@@ -14,17 +14,27 @@ until [ -f /var/www/html/wp-includes/version.php ]; do
 done
 
 # 3. สร้าง wp-config.php และใส่ค่า JWT ที่เตรียมไว้
+WP_URL=${WP_URL:-https://prepro.informatics.buu.ac.th/if-alumni-wp} # ← ดึง env มาใช้ (ถ้าไม่มีให้ใช้ค่า default)
+
 if [ ! -f /var/www/html/wp-config.php ]; then
     echo "Creating wp-config.php..."
     wp config create --dbname=wordpress --dbuser=wordpress --dbpass=wordpress --dbhost=mysql --allow-root --path=/var/www/html
 fi
 wp config set JWT_AUTH_SECRET_KEY 'd|}43VK|5OveibEv-WwG)!QE GEh*rpS2d@m,ug)!NSzP.myT|`8CN,`Kx6P<Lxs' --allow-root --path=/var/www/html
 wp config set JWT_AUTH_CORS_ENABLE true --raw --allow-root --path=/var/www/html
-wp config set FORCE_SSL_ADMIN false --raw --allow-root --path=/var/www/html
+if [ -f /var/www/html/wp-config.php ] && ! grep -q "HTTP_X_FORWARDED_PROTO" /var/www/html/wp-config.php; then
+cat <<'PHP' >> /var/www/html/wp-config.php
+
+// Handle reverse proxy HTTPS
+if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) &&
+    $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+    $_SERVER['HTTPS'] = 'on';
+}
+PHP
+fi
+# wp config set FORCE_SSL_ADMIN false --raw --allow-root --path=/var/www/html
 
 # 4. ติดตั้ง WordPress
-
-WP_URL=${WP_URL:-http://localhost:8041} # ← ดึง env มาใช้ (ถ้าไม่มีให้ใช้ค่า default)
 
 if ! wp core is-installed --allow-root --path=/var/www/html; then
     echo "Installing WordPress core..."
@@ -38,6 +48,9 @@ if ! wp core is-installed --allow-root --path=/var/www/html; then
         --allow-root \
         --path=/var/www/html
 fi
+
+wp option update home "$WP_URL" --allow-root --path=/var/www/html
+wp option update siteurl "$WP_URL" --allow-root --path=/var/www/html
 
 echo "Waiting for plugins..."
 until [ -f /var/www/html/wp-content/plugins/advanced-custom-fields/acf.php ] && \
