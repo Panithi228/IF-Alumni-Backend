@@ -49,9 +49,6 @@ if ! wp core is-installed --allow-root --path=/var/www/html; then
         --path=/var/www/html
 fi
 
-wp option update home "$WP_URL" --allow-root --path=/var/www/html
-wp option update siteurl "$WP_URL" --allow-root --path=/var/www/html
-
 echo "Waiting for plugins..."
 until [ -f /var/www/html/wp-content/plugins/advanced-custom-fields/acf.php ] && \
       [ -f /var/www/html/wp-content/plugins/custom-post-type-ui/custom-post-type-ui.php ] && \
